@@ -2,7 +2,7 @@
 
 基于`Visual Studio Code`的最新主题`VS Code`修改而来，为开发者提供舒适的编码体验。
 
-[![Open VSX Version](https://img.shields.io/open-vsx/v/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme) [![Open VSX Downloads](https://img.shields.io/open-vsx/dt/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme) [GitHub License](https://img.shields.io/github/license/Mosaulse/CoderTheme?style=flat&color=%23ff7aad)
+[![Open VSX Version](https://img.shields.io/open-vsx/v/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme) [![Open VSX Downloads](https://img.shields.io/open-vsx/dt/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme) ![GitHub License](https://img.shields.io/github/license/Mosaulse/CoderTheme?style=flat&color=%23ff7aad)
 
 
 ## 📸 预览
