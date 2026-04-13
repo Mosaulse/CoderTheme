@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/spec/v2.0.0.html)。
 
+## [1.1.1] - 2026-04-14
+
+### 优化
+- 优化 Coder Dark Sakura 主题：将主色从青色统一为樱花粉色 #ff7aad
+- 优化 Coder Light Sakura 主题：将主色从蓝色统一为樱花粉色 #e91e63
+- 更新 Terminal ANSI 配色以匹配各自主題色
+- 更新 Charts 配色以匹配各自主題色
+- 统一 tokenColors 中的函数、关键字、support 等颜色与主题色一致
+
 ## [1.1.0] - 2026-04-11
 
 ### 新增
