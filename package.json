@@ -1,0 +1,53 @@
+{
+  "name": "coder-theme",
+  "displayName": "Coder Theme",
+  "description": "A beautiful dual theme for VSCode with both dark and light variants",
+  "version": "1.1.0",
+  "publisher": "Mosaulse",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Coder Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/2026-dark.json"
+      },
+      {
+        "label": "Coder Light",
+        "uiTheme": "vs",
+        "path": "./themes/2026-light.json"
+      },
+      {
+        "label": "Coder Dark Sakura",
+        "uiTheme": "vs-dark",
+        "path": "./themes/coder-dark-sakura.json"
+      },
+      {
+        "label": "Coder Light Sakura",
+        "uiTheme": "vs",
+        "path": "./themes/coder-light-sakura.json"
+      }
+    ]
+  },
+  "keywords": [
+    "theme",
+    "dark theme",
+    "light theme",
+    "coder",
+    "productivity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitcode.com/Mosaulse/CoderTheme.git"
+  },
+  "galleryBanner": {
+    "color": "#273136",
+    "theme": "dark"
+  },
+  "icon": "images/icon.png"
+}

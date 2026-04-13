@@ -1,0 +1,100 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Primary dark gradient -->
+    <linearGradient id="darkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Accent gradient - vibrant blue to cyan -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0078d7;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Secondary accent - purple/pink -->
+    <linearGradient id="secondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Outer glow -->
+    <filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00d9ff" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- Inner shine -->
+    <filter id="shine" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+      <feComposite in="goo" in2="SourceGraphic" operator="atop"/>
+    </filter>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect x="24" y="24" width="464" height="464" rx="120" fill="url(#darkGrad)" stroke="#2a2a4e" stroke-width="3"/>
+  
+  <!-- Decorative ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#2a2a4e" stroke-width="2" opacity="0.5"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#accentGrad)" stroke-width="2" stroke-dasharray="20 15" opacity="0.3" transform="rotate(45 256 256)"/>
+  
+  <!-- Left code bracket < -->
+  <g filter="url(#outerGlow)">
+    <path d="M 195 165 L 135 256 L 195 347" 
+          stroke="url(#accentGrad)" 
+          stroke-width="48" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+    <path d="M 195 165 L 135 256 L 195 347" 
+          stroke="url(#accentGrad)" 
+          stroke-width="28" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"
+          opacity="0.6"/>
+  </g>
+  
+  <!-- Right code bracket > -->
+  <g filter="url(#outerGlow)">
+    <path d="M 317 165 L 377 256 L 317 347" 
+          stroke="url(#secondaryGrad)" 
+          stroke-width="48" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"/>
+    <path d="M 317 165 L 377 256 L 317 347" 
+          stroke="url(#secondaryGrad)" 
+          stroke-width="28" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="none"
+          opacity="0.6"/>
+  </g>
+  
+  <!-- Center slash / -->
+  <g filter="url(#outerGlow)">
+    <line x1="285" y1="145" x2="227" y2="367" 
+          stroke="url(#accentGrad)" 
+          stroke-width="42" 
+          stroke-linecap="round"
+          opacity="0.9"/>
+    <line x1="285" y1="145" x2="227" y2="367" 
+          stroke="url(#secondaryGrad)" 
+          stroke-width="22" 
+          stroke-linecap="round"
+          opacity="0.5"/>
+  </g>
+  
+  <!-- Corner accents -->
+  <circle cx="64" cy="64" r="12" fill="url(#accentGrad)" filter="url(#outerGlow)"/>
+  <circle cx="448" cy="448" r="12" fill="url(#secondaryGrad)" filter="url(#outerGlow)"/>
+  <circle cx="448" cy="64" r="8" fill="#00d9ff" opacity="0.7"/>
+  <circle cx="64" cy="448" r="8" fill="#f093fb" opacity="0.7"/>
+  
+  <!-- Subtle grid pattern overlay -->
+  <g opacity="0.05">
+    <path d="M 100 100 L 412 100 M 100 180 L 412 180 M 100 260 L 412 260 M 100 340 L 412 340 M 100 420 L 412 420" stroke="#ffffff" stroke-width="1"/>
+    <path d="M 100 100 L 100 420 M 180 100 L 180 420 M 260 100 L 260 420 M 340 100 L 340 420 M 420 100 L 420 420" stroke="#ffffff" stroke-width="1"/>
+  </g>
+</svg>

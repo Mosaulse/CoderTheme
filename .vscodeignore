@@ -1,0 +1,9 @@
+.vscodeignore
+**/.gitignore
+**/.vscode/**
+**/.idea/**
+**/*.md
+!README.md
+**/images/*
+!images/icon.png
+!images/icon.svg
