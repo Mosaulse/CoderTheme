@@ -5,6 +5,18 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/spec/v2.0.0.html)。
 
+## [1.1.2] - 2026-04-21
+
+### 修复
+- 修复四个主题的引用窗口边界模糊问题，提高视觉清晰度
+- 统一引用窗口（peekView、editorWidget、widget）边界颜色与主题强调色一致
+- 统一 quickInput 和 commandCenter 边框配色与主题强调色一致
+
+### 优化
+- 优化 peekView 标题区域背景色，增强层次感
+- 优化 quickInputTitle 背景色，与主题背景协调
+- 统一所有主题的 widget 边框样式
+
 ## [1.1.1] - 2026-04-14
 
 ### 优化
