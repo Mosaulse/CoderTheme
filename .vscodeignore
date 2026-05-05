@@ -2,7 +2,9 @@
 **/.gitignore
 **/.vscode/**
 **/.idea/**
+**/.workbuddy/**
 **/*.md
+palette-analysis.html
 !README.md
 !CHANGELOG.md
 **/images/*
