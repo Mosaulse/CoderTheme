@@ -4,6 +4,7 @@
 **/.idea/**
 **/*.md
 !README.md
+!CHANGELOG.md
 **/images/*
 !images/icon.png
 !images/icon.svg
