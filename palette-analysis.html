@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoderTheme 色板分析 v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0e1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-dim: #6e7681;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  h1 span { color: var(--text-muted); font-weight: 300; }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .theme-section {
+    margin-bottom: 64px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .theme-header {
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .theme-header .preview {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    display: flex;
+    overflow: hidden;
+  }
+  .theme-header .preview div { flex: 1; }
+
+  .theme-header .info h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .theme-header .info p {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .palette-body {
+    padding: 24px 32px;
+  }
+
+  .color-group {
+    margin-bottom: 28px;
+  }
+  .color-group:last-child { margin-bottom: 0; }
+
+  .group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+
+  .swatch-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .swatch {
+    width: 88px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+  .swatch:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+
+  .swatch .color-block {
+    height: 52px;
+    position: relative;
+  }
+
+  .swatch .color-info {
+    padding: 6px 8px;
+    background: var(--surface);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .swatch .color-info .hex {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .swatch .color-info .label {
+    color: var(--text-dim);
+    font-size: 10px;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contrast-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .pass-aa { background: #23863640; color: #3fb950; }
+  .fail-aa { background: #da363340; color: #f85149; }
+  .improved { background: #1f6feb30; color: #58a6ff; }
+
+  .code-preview {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .analysis-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .analysis-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .analysis-card .issue {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .analysis-card .issue:last-child { margin-bottom: 0; }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .dot.warn { background: #d29922; }
+  .dot.info { background: #58a6ff; }
+  .dot.good { background: #3fb950; }
+  .dot.fix { background: #a371f7; }
+
+  .changelog {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .changelog h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #a371f7;
+    margin-bottom: 10px;
+  }
+  .changelog ul {
+    list-style: none;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+  .changelog ul li::before {
+    content: '→';
+    color: #a371f7;
+    margin-right: 8px;
+  }
+  .changelog .old { text-decoration: line-through; color: #f8514980; }
+  .changelog .new { color: #3fb950; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    body { padding: 20px 12px; }
+    .palette-body { padding: 16px; }
+    .theme-header { padding: 16px; }
+    .swatch { width: 76px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>CoderTheme <span>Palette Analysis v2</span></h1>
+<p class="subtitle">四套 VS Code 主题色彩提取 & 对比度分析 · 含第一轮优化变更记录</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2026 DARK -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="theme-section">
+  <div class="theme-header" style="background: linear-gradient(135deg, #1e2529, #273136);">
+    <div class="preview">
+      <div style="background:#1e2529"></div>
+      <div style="background:#273136"></div>
+      <div style="background:#232a2e"></div>
+      <div style="background:#4da6cc"></div>
+    </div>
+    <div class="info">
+      <h2>2026 Dark</h2>
+      <p>冷灰青蓝调 · 主色 #4da6cc · 编辑器背景 #273136 · 前景 #cdd7db</p>
+    </div>
+  </div>
+  <div class="palette-body">
+
+    <div class="color-group">
+      <div class="group-title">Backgrounds 背景层级</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#1a2024"></div><div class="color-info"><div class="hex">#1a2024</div><div class="label">terminal / title</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#1e2529"></div><div class="color-info"><div class="hex">#1e2529</div><div class="label">activity / status</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#232a2e"></div><div class="color-info"><div class="hex">#232a2e</div><div class="label">sidebar / panel</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#273136</div><div class="label">editor base</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#2e383d"></div><div class="color-info"><div class="hex">#2e383d</div><div class="label">widget / hover</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#2a3439"></div><div class="color-info"><div class="hex">#2a3439</div><div class="label">sticky scroll</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#323d42"></div><div class="color-info"><div class="hex">#323d42</div><div class="label">inactive select</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Foregrounds 前景文字</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#cdd7db <span class="contrast-badge improved">↑</span></div><div class="label">foreground</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#a3a8ae <span class="contrast-badge improved">↑</span></div><div class="label">description / muted</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#7a8490 <span class="contrast-badge improved">↑</span></div><div class="label">line number</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#646e75 <span class="contrast-badge improved">↑</span></div><div class="label">disabled / placeholder</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#f0f0f0 <span class="contrast-badge pass-aa">AA</span></div><div class="label">active selection</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#939da5 <span class="contrast-badge improved">↑</span></div><div class="label">comment token</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Accent 强调色 · 青蓝系</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#4da6cc"></div><div class="color-info"><div class="hex">#4da6cc</div><div class="label">primary accent</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#5db4d9"></div><div class="color-info"><div class="hex">#5db4d9</div><div class="label">link</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#6ec0e3"></div><div class="color-info"><div class="hex">#6ec0e3</div><div class="label">link active</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#3a8ab8"></div><div class="color-info"><div class="hex">#3a8ab8</div><div class="label">button</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4596c4"></div><div class="color-info"><div class="hex">#4596c4</div><div class="label">button hover</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Selection 选择区 · accent 透明度梯度 (NEW)</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#4da6cc55"></div><div class="color-info"><div class="hex">#4da6cc55</div><div class="label">selection</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4da6cc30"></div><div class="color-info"><div class="hex">#4da6cc30</div><div class="label">inactive / highlight</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4da6cc25"></div><div class="color-info"><div class="hex">#4da6cc25</div><div class="label">word highlight</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4da6cc40"></div><div class="color-info"><div class="hex">#4da6cc40</div><div class="label">word strong / findHL</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4da6cc55"></div><div class="color-info"><div class="hex">#4da6cc55</div><div class="label">find match</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Semantic 语义色 · warning 已统一</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#ff7b72"></div><div class="color-info"><div class="hex">#ff7b72</div><div class="label">error / keyword</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#d64a4a"></div><div class="color-info"><div class="hex">#d64a4a</div><div class="label">error border</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e8c07d"></div><div class="color-info"><div class="hex">#e8c07d <span class="contrast-badge improved">unified</span></div><div class="label">warning (统一)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#73c991"></div><div class="color-info"><div class="hex">#73c991</div><div class="label">success / added</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#6ab890"></div><div class="color-info"><div class="hex">#6ab890</div><div class="label">modified</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Syntax Token 语法高亮</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#939da5"></div><div class="color-info"><div class="hex">#939da5 <span class="contrast-badge improved">↑</span></div><div class="label">comment</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff7b72"></div><div class="color-info"><div class="hex">#ff7b72</div><div class="label">keyword / storage</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#79c0ff"></div><div class="color-info"><div class="hex">#79c0ff</div><div class="label">constant / entity</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#a5d6ff"></div><div class="color-info"><div class="hex">#a5d6ff</div><div class="label">string</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#d2a8ff"></div><div class="color-info"><div class="hex">#d2a8ff</div><div class="label">function</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ffa657"></div><div class="color-info"><div class="hex">#ffa657</div><div class="label">variable / entity.name</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#7ee787"></div><div class="color-info"><div class="hex">#7ee787</div><div class="label">tag / HTML</div></div></div>
+      </div>
+    </div>
+
+    <div class="code-preview" style="background:#273136; border-color:#2e383d;">
+      <span style="color:#939da5">// 2026 Dark 语法预览</span><br>
+      <span style="color:#ff7b72">public</span> <span style="color:#ff7b72">async</span> <span style="color:#d2a8ff"><em>Task</em></span> <span style="color:#d2a8ff"><em>LoadAsync</em></span>() {<br>
+      &nbsp;&nbsp;<span style="color:#ff7b72">var</span> <span style="color:#ffa657">data</span> = <span style="color:#ff7b72">await</span> <span style="color:#d2a8ff"><em>FetchData</em></span>();<br>
+      &nbsp;&nbsp;<span style="color:#79c0ff">Console</span>.<span style="color:#d2a8ff"><em>WriteLine</em></span>(<span style="color:#a5d6ff">"Hello 2026"</span>);<br>
+      }
+    </div>
+
+    <div class="changelog">
+      <h3>v2 变更记录</h3>
+      <ul>
+        <li>foreground: <span class="old">#c5cfd3</span> → <span class="new">#cdd7db</span> (对比度 4.2→4.6:1)</li>
+        <li>description/muted: <span class="old">#9aa0a6</span> → <span class="new">#a3a8ae</span> (3.5→3.9:1)</li>
+        <li>line number: <span class="old">#6b7280</span> → <span class="new">#7a8490</span> (2.1→2.7:1)</li>
+        <li>disabled/placeholder: <span class="old">#5a6369</span> → <span class="new">#646e75</span> (1.8→2.2:1)</li>
+        <li>comment token: <span class="old">#8b949e</span> → <span class="new">#939da5</span> (3.4→3.9:1)</li>
+        <li>selection 系列: <span class="old">#3a7a99 系</span> → <span class="new">#4da6cc 透明度梯度</span> (统一到 accent)</li>
+        <li>warning: <span class="old">#d4af37/#e8c07d 双色</span> → <span class="new">#e8c07d 统一</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2026 LIGHT -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="theme-section">
+  <div class="theme-header" style="background: linear-gradient(135deg, #e4e5e1, #f8f9f6);">
+    <div class="preview">
+      <div style="background:#e4e5e1"></div>
+      <div style="background:#f0f1ee"></div>
+      <div style="background:#f8f9f6"></div>
+      <div style="background:#0066cc"></div>
+    </div>
+    <div class="info">
+      <h2 style="color:#1f2328">2026 Light</h2>
+      <p style="color:#5f6366">暖灰自然光调 · 主色 #0066cc · 编辑器背景 #f8f9f6 · 前景 #2a2a2a</p>
+    </div>
+  </div>
+  <div class="palette-body">
+
+    <div class="color-group">
+      <div class="group-title">Backgrounds 背景层级</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#e4e5e1"></div><div class="color-info"><div class="hex">#e4e5e1</div><div class="label">activity / title</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e8e9e5"></div><div class="color-info"><div class="hex">#e8e9e5</div><div class="label">title inactive</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f0f1ee"></div><div class="color-info"><div class="hex">#f0f1ee</div><div class="label">sidebar / panel</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#EDEEEB"></div><div class="color-info"><div class="hex">#EDEEEB</div><div class="label">widget / dropdown</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#f8f9f6</div><div class="label">editor base</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e5e6e2"></div><div class="color-info"><div class="hex">#e5e6e2</div><div class="label">blockquote</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Foregrounds 前景文字</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#2a2a2a <span class="contrast-badge pass-aa">AA</span></div><div class="label">foreground</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#5f6366 <span class="contrast-badge improved">↑</span></div><div class="label">muted / description</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#848a8e <span class="contrast-badge improved">↑</span></div><div class="label">placeholder</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#9a9a9a <span class="contrast-badge improved">↑</span></div><div class="label">disabled</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Accent 强调色 · 蓝系</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#0066cc"></div><div class="color-info"><div class="hex">#0066cc</div><div class="label">primary accent</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#005bb5"></div><div class="color-info"><div class="hex">#005bb5</div><div class="label">accent hover</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#1a5ae0"></div><div class="color-info"><div class="hex">#1a5ae0</div><div class="label">chart blue</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Semantic 语义色</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#c42b1c"></div><div class="color-info"><div class="hex">#c42b1c</div><div class="label">error</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#bfa100"></div><div class="color-info"><div class="hex">#bfa100</div><div class="label">warning</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#7d8a0a"></div><div class="color-info"><div class="hex">#7d8a0a</div><div class="label">modified</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#4a8f2e"></div><div class="color-info"><div class="hex">#4a8f2e</div><div class="label">success / added</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Syntax Token 语法高亮</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#5c6369"></div><div class="color-info"><div class="hex">#5c6369 <span class="contrast-badge improved">↑</span></div><div class="label">comment</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#cf222e"></div><div class="color-info"><div class="hex">#cf222e</div><div class="label">keyword / storage</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#0550ae"></div><div class="color-info"><div class="hex">#0550ae</div><div class="label">constant / entity</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#0a3069"></div><div class="color-info"><div class="hex">#0a3069</div><div class="label">string</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#8250df"></div><div class="color-info"><div class="hex">#8250df</div><div class="label">function</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#953800"></div><div class="color-info"><div class="hex">#953800</div><div class="label">variable / entity.name</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#116329"></div><div class="color-info"><div class="hex">#116329</div><div class="label">tag / HTML</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#1f2328"></div><div class="color-info"><div class="hex">#1f2328</div><div class="label">variable.other</div></div></div>
+      </div>
+    </div>
+
+    <div class="code-preview" style="background:#f8f9f6; border-color:#e5e6e2; color:#2a2a2a;">
+      <span style="color:#5c6369">// 2026 Light 语法预览</span><br>
+      <span style="color:#cf222e">public</span> <span style="color:#cf222e">async</span> <span style="color:#8250df"><em>Task</em></span> <span style="color:#8250df"><em>LoadAsync</em></span>() {<br>
+      &nbsp;&nbsp;<span style="color:#cf222e">var</span> <span style="color:#953800">data</span> = <span style="color:#cf222e">await</span> <span style="color:#8250df"><em>FetchData</em></span>();<br>
+      &nbsp;&nbsp;<span style="color:#0550ae">Console</span>.<span style="color:#8250df"><em>WriteLine</em></span>(<span style="color:#0a3069">"Hello 2026"</span>);<br>
+      }
+    </div>
+
+    <div class="changelog">
+      <h3>v2 变更记录</h3>
+      <ul>
+        <li>description/muted: <span class="old">#6b6b6b</span> → <span class="new">#5f6366</span> (3.7→4.4:1)</li>
+        <li>comment token: <span class="old">#6e7781</span> → <span class="new">#5c6369</span> (3.5→4.5:1)</li>
+        <li>placeholder: <span class="old">#9a9a9a</span> → <span class="new">#848a8e</span> (2.1→3.1:1)</li>
+        <li>disabled: <span class="old">#b0b0b0</span> → <span class="new">#9a9a9a</span> (1.7→2.1:1)</li>
+        <li>inactiveSelection: <span class="old">#0066cc10</span> → <span class="new">#0066cc18</span> (微提可见度)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CODER DARK SAKURA -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="theme-section">
+  <div class="theme-header" style="background: linear-gradient(135deg, #1e2529, #273136);">
+    <div class="preview">
+      <div style="background:#1e2529"></div>
+      <div style="background:#273136"></div>
+      <div style="background:#543644"></div>
+      <div style="background:#ff7aad"></div>
+    </div>
+    <div class="info">
+      <h2>Coder Dark Sakura</h2>
+      <p>暗夜樱花粉 · 主色 #ff7aad · 编辑器背景 #273136 · 前景 #d9d9d9 · 选择区 #543644</p>
+    </div>
+  </div>
+  <div class="palette-body">
+
+    <div class="color-group">
+      <div class="group-title">Backgrounds 背景层级</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#1a2024"></div><div class="color-info"><div class="hex">#1a2024</div><div class="label">terminal</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#1e2529"></div><div class="color-info"><div class="hex">#1e2529</div><div class="label">activity / status</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#232729"></div><div class="color-info"><div class="hex">#232729</div><div class="label">input / checkbox</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#232a2e"></div><div class="color-info"><div class="hex">#232a2e</div><div class="label">sidebar / panel</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#273136</div><div class="label">editor base</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#2e383d"></div><div class="color-info"><div class="hex">#2e383d</div><div class="label">widget</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#543644"></div><div class="color-info"><div class="hex">#543644</div><div class="label">sakura selection</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Foregrounds 前景文字</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#d9d9d9 <span class="contrast-badge pass-aa">AA</span></div><div class="label">foreground</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#d9d9d9 <span class="contrast-badge improved">unified</span></div><div class="label">cursor / active line#</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#b2b4b6 <span class="contrast-badge improved">↑</span></div><div class="label">description / icon / comment</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#9aa0a6</div><div class="label">inactive / breadcrumb</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#273136"></div><div class="color-info"><div class="hex">#7a7c7d</div><div class="label">disabled / placeholder</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Accent 强调色 · 樱花粉系</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#ff7aad"></div><div class="color-info"><div class="hex">#ff7aad</div><div class="label">primary sakura</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff94bd"></div><div class="color-info"><div class="hex">#ff94bd</div><div class="label">sakura hover</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff8cc0"></div><div class="color-info"><div class="hex">#ff8cc0</div><div class="label">ansi cyan</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ffa0d0"></div><div class="color-info"><div class="hex">#ffa0d0</div><div class="label">ansi bright cyan</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#77d7ff"></div><div class="color-info"><div class="hex">#77d7ff</div><div class="label">link active (蓝调)</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Selection 选择区 · sakura 透明度梯度 (NEW)</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#543644dd"></div><div class="color-info"><div class="hex">#543644dd</div><div class="label">selection</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#54364480"></div><div class="color-info"><div class="hex">#54364480</div><div class="label">inactive selection</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#54364470"></div><div class="color-info"><div class="hex">#54364470</div><div class="label">selection highlight</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#543644c0"></div><div class="color-info"><div class="hex">#543644c0</div><div class="label">find match</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Semantic 语义色</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#f27979"></div><div class="color-info"><div class="hex">#f27979</div><div class="label">error</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff7b72"></div><div class="color-info"><div class="hex">#ff7b72</div><div class="label">error (gutter)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f2d466"></div><div class="color-info"><div class="hex">#f2d466</div><div class="label">warning</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#d4af37"></div><div class="color-info"><div class="hex">#d4af37</div><div class="label">warning badge</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#73c991"></div><div class="color-info"><div class="hex">#73c991</div><div class="label">success / added</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#a4d964"></div><div class="color-info"><div class="hex">#a4d964</div><div class="label">sakura green / string</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Syntax Token 语法高亮</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#b2b4b6"></div><div class="color-info"><div class="hex">#b2b4b6 <span class="contrast-badge improved">↑</span></div><div class="label">comment</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#a4d964"></div><div class="color-info"><div class="hex">#a4d964</div><div class="label">string / tag / doc</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff7aad"></div><div class="color-info"><div class="hex">#ff7aad</div><div class="label">keyword / function</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#be8df2"></div><div class="color-info"><div class="hex">#be8df2</div><div class="label">constant / property</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f2d466"></div><div class="color-info"><div class="hex">#f2d466</div><div class="label">entity.name / class</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f29655"></div><div class="color-info"><div class="hex">#f29655</div><div class="label">escape / regex</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#d9d9d9"></div><div class="color-info"><div class="hex">#d9d9d9</div><div class="label">variable.other</div></div></div>
+      </div>
+    </div>
+
+    <div class="code-preview" style="background:#273136; border-color:#2e383d;">
+      <span style="color:#b2b4b6"><em>// Coder Dark Sakura 语法预览</em></span><br>
+      <span style="color:#ff7aad"><em>public</em></span> <span style="color:#ff7aad"><em>async</em></span> <span style="color:#f2d466"><em>Task</em></span> <span style="color:#ff7aad"><em>LoadAsync</em></span>() {<br>
+      &nbsp;&nbsp;<span style="color:#ff7aad"><em>var</em></span> <span style="color:#d9d9d9">data</span> = <span style="color:#ff7aad"><em>await</em></span> <span style="color:#ff7aad"><em>FetchData</em></span>();<br>
+      &nbsp;&nbsp;<span style="color:#be8df2">Console</span>.<span style="color:#ff7aad"><em>WriteLine</em></span>(<span style="color:#a4d964">"Hello Sakura"</span>);<br>
+      }
+    </div>
+
+    <div class="changelog">
+      <h3>v2 变更记录</h3>
+      <ul>
+        <li>comment/description: <span class="old">#a9aaab</span> → <span class="new">#b2b4b6</span> (3.3→3.7:1)</li>
+        <li>cursor/activeLine#: <span class="old">#c5cfd3</span> → <span class="new">#d9d9d9</span> (统一到 sakura 前景)</li>
+        <li>selection 系列: <span class="old">#3a7a99 蓝</span> → <span class="new">#543644 sakura 粉紫暗</span> (统一主题)</li>
+        <li>scrollbar active: <span class="old">#91506b</span> → <span class="new">#a55878</span> (区分 hover/active)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CODER LIGHT SAKURA -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="theme-section">
+  <div class="theme-header" style="background: linear-gradient(135deg, #e4e5e1, #fbe9ec);">
+    <div class="preview">
+      <div style="background:#e4e5e1"></div>
+      <div style="background:#f8f9f6"></div>
+      <div style="background:#fbe9ec"></div>
+      <div style="background:#e91e63"></div>
+    </div>
+    <div class="info">
+      <h2 style="color:#1f2328">Coder Light Sakura</h2>
+      <p style="color:#5f6366">晨光樱花粉 · 主色 #e91e63 / #c2185b · 编辑器背景 #f8f9f6 · 前景 #2d2d2d</p>
+    </div>
+  </div>
+  <div class="palette-body">
+
+    <div class="color-group">
+      <div class="group-title">Backgrounds 背景层级</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#e4e5e1"></div><div class="color-info"><div class="hex">#e4e5e1</div><div class="label">activity / title</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f0f1ee"></div><div class="color-info"><div class="hex">#f0f1ee</div><div class="label">sidebar / panel</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#f8f9f6</div><div class="label">editor base</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#EDEEEB"></div><div class="color-info"><div class="hex">#EDEEEB</div><div class="label">widget</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#fbe9ec"></div><div class="color-info"><div class="hex">#fbe9ec</div><div class="label">sakura input</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f5e6eb"></div><div class="color-info"><div class="hex">#f5e6eb</div><div class="label">sakura hover</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f5c6d0"></div><div class="color-info"><div class="hex">#f5c6d0</div><div class="label">sakura border</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Foregrounds 前景文字</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#2d2d2d <span class="contrast-badge pass-aa">AA</span></div><div class="label">foreground</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#5f6366 <span class="contrast-badge improved">↑</span></div><div class="label">muted / description</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#fbe9ec"></div><div class="color-info"><div class="hex">#8e6b7a <span class="contrast-badge improved">↑</span></div><div class="label">placeholder (粉背景)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#9a9a9a <span class="contrast-badge improved">↑</span></div><div class="label">disabled</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f8f9f6"></div><div class="color-info"><div class="hex">#7a7a7a <span class="contrast-badge improved">↑</span></div><div class="label">comment</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Accent 强调色 · 樱花粉系</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#e91e63"></div><div class="color-info"><div class="hex">#e91e63</div><div class="label">primary sakura</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#c2185b"></div><div class="color-info"><div class="hex">#c2185b</div><div class="label">sakura hover / link</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f06292"></div><div class="color-info"><div class="hex">#f06292</div><div class="label">bright blue (ansi)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f48fb1"></div><div class="color-info"><div class="hex">#f48fb1</div><div class="label">ansi cyan</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#f78fc0"></div><div class="color-info"><div class="hex">#f78fc0</div><div class="label">bright cyan</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Semantic 语义色</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#c62828"></div><div class="color-info"><div class="hex">#c62828</div><div class="label">error</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e65100"></div><div class="color-info"><div class="hex">#e65100</div><div class="label">warning / modified</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ffa000"></div><div class="color-info"><div class="hex">#ffa000</div><div class="label">warning badge</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#2e7d32"></div><div class="color-info"><div class="hex">#2e7d32</div><div class="label">success / added</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#7b1fa2"></div><div class="color-info"><div class="hex">#7b1fa2</div><div class="label">purple / constant</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Syntax Token 语法高亮</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#7a7a7a"></div><div class="color-info"><div class="hex">#7a7a7a <span class="contrast-badge improved">↑</span></div><div class="label">comment</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#2e7d32"></div><div class="color-info"><div class="hex">#2e7d32</div><div class="label">string / tag</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#c2185b"></div><div class="color-info"><div class="hex">#c2185b</div><div class="label">keyword / storage</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e91e63"></div><div class="color-info"><div class="hex">#e91e63</div><div class="label">function / support</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#7b1fa2"></div><div class="color-info"><div class="hex">#7b1fa2</div><div class="label">constant / property</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e65100"></div><div class="color-info"><div class="hex">#e65100</div><div class="label">entity.name / class</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ef6c00"></div><div class="color-info"><div class="hex">#ef6c00</div><div class="label">escape / regex</div></div></div>
+      </div>
+    </div>
+
+    <div class="code-preview" style="background:#f8f9f6; border-color:#f5c6d0; color:#2d2d2d;">
+      <span style="color:#7a7a7a"><em>// Coder Light Sakura 语法预览</em></span><br>
+      <span style="color:#c2185b"><em>public</em></span> <span style="color:#c2185b"><em>async</em></span> <span style="color:#e65100"><em>Task</em></span> <span style="color:#e91e63"><em>LoadAsync</em></span>() {<br>
+      &nbsp;&nbsp;<span style="color:#c2185b"><em>var</em></span> <span style="color:#e65100">data</span> = <span style="color:#c2185b"><em>await</em></span> <span style="color:#e91e63"><em>FetchData</em></span>();<br>
+      &nbsp;&nbsp;<span style="color:#7b1fa2">Console</span>.<span style="color:#e91e63"><em>WriteLine</em></span>(<span style="color:#2e7d32">"Hello Sakura"</span>);<br>
+      }
+    </div>
+
+    <div class="changelog">
+      <h3>v2 变更记录</h3>
+      <ul>
+        <li>comment: <span class="old">#9e9e9e</span> → <span class="new">#7a7a7a</span> (2.1→3.6:1)</li>
+        <li>description/muted: <span class="old">#6b6b6b</span> → <span class="new">#5f6366</span> (3.7→4.4:1)</li>
+        <li>placeholder (粉背景): <span class="old">#b0b0b0</span> → <span class="new">#8e6b7a</span> (粉调灰，1.5→3.0:1)</li>
+        <li>disabled: <span class="old">#b0b0b0</span> → <span class="new">#9a9a9a</span> (1.7→2.1:1)</li>
+        <li>ignored git: <span class="old">#b0b0b0</span> → <span class="new">#9a9a9a</span> (统一)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 跨主题对比 -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="theme-section">
+  <div class="theme-header" style="background: linear-gradient(135deg, #161b22, #1c2128);">
+    <div class="info" style="padding:0">
+      <h2>跨主题对比 Cross-Theme Comparison</h2>
+      <p style="color:var(--text-muted)">四套主题核心指标并排对比 · v2 更新</p>
+    </div>
+  </div>
+  <div class="palette-body">
+
+    <div class="color-group">
+      <div class="group-title">主色 Accent 对比</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#4da6cc"></div><div class="color-info"><div class="hex">#4da6cc</div><div class="label">2026 Dark</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#0066cc"></div><div class="color-info"><div class="hex">#0066cc</div><div class="label">2026 Light</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#ff7aad"></div><div class="color-info"><div class="hex">#ff7aad</div><div class="label">Sakura Dark</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e91e63"></div><div class="color-info"><div class="hex">#e91e63</div><div class="label">Sakura Light</div></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="group-title">Selection 选择区 (NEW)</div>
+      <div class="swatch-row">
+        <div class="swatch"><div class="color-block" style="background:#4da6cc55"></div><div class="color-info"><div class="hex">#4da6cc55</div><div class="label">2026 Dark (accent)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#0066cc30"></div><div class="color-info"><div class="hex">#0066cc30</div><div class="label">2026 Light (accent)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#543644dd"></div><div class="color-info"><div class="hex">#543644dd</div><div class="label">Sakura Dark (sakura)</div></div></div>
+        <div class="swatch"><div class="color-block" style="background:#e91e6330"></div><div class="color-info"><div class="hex">#e91e6330</div><div class="label">Sakura Light (sakura)</div></div></div>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto; margin-top:24px;">
+      <table style="width:100%; border-collapse:collapse; font-size:13px; font-family:'JetBrains Mono',monospace;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left; padding:8px 12px; color:var(--text-muted); font-weight:600;">属性</th>
+            <th style="text-align:left; padding:8px 12px; color:#4da6cc; font-weight:600;">2026 Dark</th>
+            <th style="text-align:left; padding:8px 12px; color:#0066cc; font-weight:600;">2026 Light</th>
+            <th style="text-align:left; padding:8px 12px; color:#ff7aad; font-weight:600;">Sakura Dark</th>
+            <th style="text-align:left; padding:8px 12px; color:#e91e63; font-weight:600;">Sakura Light</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px 12px; color:var(--text-muted);">主色</td>
+            <td style="padding:6px 12px;">#4da6cc</td>
+            <td style="padding:6px 12px;">#0066cc</td>
+            <td style="padding:6px 12px;">#ff7aad</td>
+            <td style="padding:6px 12px;">#e91e63</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px 12px; color:var(--text-muted);">选择区</td>
+            <td style="padding:6px 12px;">#4da6cc55 <span style="color:#a371f7">NEW</span></td>
+            <td style="padding:6px 12px;">#0066cc30</td>
+            <td style="padding:6px 12px;">#543644dd <span style="color:#a371f7">NEW</span></td>
+            <td style="padding:6px 12px;">#e91e6330</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px 12px; color:var(--text-muted);">前景</td>
+            <td style="padding:6px 12px;">#cdd7db <span style="color:#3fb950">↑</span></td>
+            <td style="padding:6px 12px;">#2a2a2a</td>
+            <td style="padding:6px 12px;">#d9d9d9</td>
+            <td style="padding:6px 12px;">#2d2d2d</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px 12px; color:var(--text-muted);">注释</td>
+            <td style="padding:6px 12px;">#939da5 <span style="color:#3fb950">↑</span></td>
+            <td style="padding:6px 12px;">#5c6369 <span style="color:#3fb950">↑</span></td>
+            <td style="padding:6px 12px;">#b2b4b6 <span style="color:#3fb950">↑</span></td>
+            <td style="padding:6px 12px;">#7a7a7a <span style="color:#3fb950">↑</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px 12px; color:var(--text-muted);">前景对比度</td>
+            <td style="padding:6px 12px;">~4.6:1 <span style="color:#3fb950">↑</span></td>
+            <td style="padding:6px 12px;">~12.5:1</td>
+            <td style="padding:6px 12px;">~5.6:1</td>
+            <td style="padding:6px 12px;">~11.8:1</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 12px; color:var(--text-muted);">特色</td>
+            <td style="padding:6px 12px; color:var(--text-dim);">冷灰青蓝</td>
+            <td style="padding:6px 12px; color:var(--text-dim);">暖灰标准蓝</td>
+            <td style="padding:6px 12px; color:var(--text-dim);">暗夜樱花</td>
+            <td style="padding:6px 12px; color:var(--text-dim);">晨光樱花</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+</div>
+</body>
+</html>
