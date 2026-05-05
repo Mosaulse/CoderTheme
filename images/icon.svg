@@ -1,100 +1,128 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Primary dark gradient -->
-    <linearGradient id="darkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    <!-- Background gradient: deep charcoal from Dark themes -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a3438;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e2529;stop-opacity:1" />
     </linearGradient>
-    
-    <!-- Accent gradient - vibrant blue to cyan -->
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0078d7;stop-opacity:1" />
+
+    <!-- Blue accent gradient: Coder Dark/Light identity -->
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5db4d9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066cc;stop-opacity:1" />
     </linearGradient>
-    
-    <!-- Secondary accent - purple/pink -->
-    <linearGradient id="secondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+
+    <!-- Pink accent gradient: Sakura identity -->
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff7aad;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e91e63;stop-opacity:1" />
     </linearGradient>
-    
-    <!-- Outer glow -->
-    <filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00d9ff" flood-opacity="0.4"/>
+
+    <!-- Center slash gradient: blue to pink transition -->
+    <linearGradient id="slashGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5db4d9;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#c07aeb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff7aad;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Subtle border gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4da6cc;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#ff7aad;stop-opacity:0.3" />
+    </linearGradient>
+
+    <!-- Blue glow filter -->
+    <filter id="blueGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4da6cc" flood-opacity="0.5"/>
     </filter>
-    
-    <!-- Inner shine -->
-    <filter id="shine" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
-      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
-      <feComposite in="goo" in2="SourceGraphic" operator="atop"/>
+
+    <!-- Pink glow filter -->
+    <filter id="pinkGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#ff7aad" flood-opacity="0.5"/>
     </filter>
+
+    <!-- Slash glow filter -->
+    <filter id="slashGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#c07aeb" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- Inner light reflection -->
+    <radialGradient id="innerLight" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.06" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
   </defs>
-  
+
   <!-- Background rounded square -->
-  <rect x="24" y="24" width="464" height="464" rx="120" fill="url(#darkGrad)" stroke="#2a2a4e" stroke-width="3"/>
-  
-  <!-- Decorative ring -->
-  <circle cx="256" cy="256" r="180" fill="none" stroke="#2a2a4e" stroke-width="2" opacity="0.5"/>
-  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#accentGrad)" stroke-width="2" stroke-dasharray="20 15" opacity="0.3" transform="rotate(45 256 256)"/>
-  
-  <!-- Left code bracket < -->
-  <g filter="url(#outerGlow)">
-    <path d="M 195 165 L 135 256 L 195 347" 
-          stroke="url(#accentGrad)" 
-          stroke-width="48" 
-          stroke-linecap="round" 
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#bgGrad)"/>
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="url(#borderGrad)" stroke-width="2"/>
+
+  <!-- Inner ambient light -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#innerLight)"/>
+
+  <!-- Subtle decorative ring -->
+  <circle cx="256" cy="256" r="185" fill="none" stroke="#3a4a50" stroke-width="1" opacity="0.3"/>
+  <circle cx="256" cy="256" r="185" fill="none" stroke="url(#borderGrad)" stroke-width="1.5" stroke-dasharray="12 18" opacity="0.25" transform="rotate(-30 256 256)"/>
+
+  <!-- Left code bracket < (Blue side — Coder) -->
+  <g filter="url(#blueGlow)">
+    <path d="M 200 168 L 128 256 L 200 344"
+          stroke="url(#blueGrad)"
+          stroke-width="44"
+          stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"/>
-    <path d="M 195 165 L 135 256 L 195 347" 
-          stroke="url(#accentGrad)" 
-          stroke-width="28" 
-          stroke-linecap="round" 
+    <!-- Inner highlight -->
+    <path d="M 200 168 L 128 256 L 200 344"
+          stroke="#8dd8f0"
+          stroke-width="16"
+          stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"
-          opacity="0.6"/>
+          opacity="0.25"/>
   </g>
-  
-  <!-- Right code bracket > -->
-  <g filter="url(#outerGlow)">
-    <path d="M 317 165 L 377 256 L 317 347" 
-          stroke="url(#secondaryGrad)" 
-          stroke-width="48" 
-          stroke-linecap="round" 
+
+  <!-- Right code bracket > (Pink side — Sakura) -->
+  <g filter="url(#pinkGlow)">
+    <path d="M 312 168 L 384 256 L 312 344"
+          stroke="url(#pinkGrad)"
+          stroke-width="44"
+          stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"/>
-    <path d="M 317 165 L 377 256 L 317 347" 
-          stroke="url(#secondaryGrad)" 
-          stroke-width="28" 
-          stroke-linecap="round" 
+    <!-- Inner highlight -->
+    <path d="M 312 168 L 384 256 L 312 344"
+          stroke="#ffb8d0"
+          stroke-width="16"
+          stroke-linecap="round"
           stroke-linejoin="round"
           fill="none"
-          opacity="0.6"/>
+          opacity="0.25"/>
   </g>
-  
-  <!-- Center slash / -->
-  <g filter="url(#outerGlow)">
-    <line x1="285" y1="145" x2="227" y2="367" 
-          stroke="url(#accentGrad)" 
-          stroke-width="42" 
+
+  <!-- Center slash / (Blue→Pink gradient — the bridge) -->
+  <g filter="url(#slashGlow)">
+    <line x1="289" y1="148" x2="223" y2="364"
+          stroke="url(#slashGrad)"
+          stroke-width="38"
+          stroke-linecap="round"/>
+    <!-- Inner highlight -->
+    <line x1="289" y1="148" x2="223" y2="364"
+          stroke="#e0b8f0"
+          stroke-width="14"
           stroke-linecap="round"
-          opacity="0.9"/>
-    <line x1="285" y1="145" x2="227" y2="367" 
-          stroke="url(#secondaryGrad)" 
-          stroke-width="22" 
-          stroke-linecap="round"
-          opacity="0.5"/>
+          opacity="0.2"/>
   </g>
-  
-  <!-- Corner accents -->
-  <circle cx="64" cy="64" r="12" fill="url(#accentGrad)" filter="url(#outerGlow)"/>
-  <circle cx="448" cy="448" r="12" fill="url(#secondaryGrad)" filter="url(#outerGlow)"/>
-  <circle cx="448" cy="64" r="8" fill="#00d9ff" opacity="0.7"/>
-  <circle cx="64" cy="448" r="8" fill="#f093fb" opacity="0.7"/>
-  
-  <!-- Subtle grid pattern overlay -->
-  <g opacity="0.05">
-    <path d="M 100 100 L 412 100 M 100 180 L 412 180 M 100 260 L 412 260 M 100 340 L 412 340 M 100 420 L 412 420" stroke="#ffffff" stroke-width="1"/>
-    <path d="M 100 100 L 100 420 M 180 100 L 180 420 M 260 100 L 260 420 M 340 100 L 340 420 M 420 100 L 420 420" stroke="#ffffff" stroke-width="1"/>
-  </g>
+
+  <!-- Corner accent dots -->
+  <!-- Top-left: blue -->
+  <circle cx="62" cy="62" r="6" fill="#4da6cc" opacity="0.6"/>
+  <circle cx="62" cy="62" r="3" fill="#8dd8f0" opacity="0.8"/>
+  <!-- Bottom-right: pink -->
+  <circle cx="450" cy="450" r="6" fill="#ff7aad" opacity="0.6"/>
+  <circle cx="450" cy="450" r="3" fill="#ffb8d0" opacity="0.8"/>
+  <!-- Top-right: subtle crossover dot -->
+  <circle cx="450" cy="62" r="4" fill="#c07aeb" opacity="0.4"/>
+  <!-- Bottom-left: subtle crossover dot -->
+  <circle cx="62" cy="450" r="4" fill="#c07aeb" opacity="0.4"/>
 </svg>
