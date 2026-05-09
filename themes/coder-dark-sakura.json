@@ -795,5 +795,22 @@
             }
         }
     ],
+    "semanticTokenColors": {
+        "comment": "#b2b4b6",
+        "string": "#a4d964",
+        "number": "#be8df2",
+        "keyword": "#ff7aad",
+        "variable": "#d9d9d9",
+        "parameter": "#d9d9d9",
+        "function": "#ff7aad",
+        "member": "#be8df2",
+        "property": "#be8df2",
+        "class": "#a4d964",
+        "interface": "#a4d964",
+        "enum": "#a4d964",
+        "type": "#f2d466",
+        "boolean": "#be8df2",
+        "operator": "#d9d9d9"
+    },
     "semanticHighlighting": true
 }
