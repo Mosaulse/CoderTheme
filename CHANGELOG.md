@@ -5,6 +5,12 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/spec/v2.0.0.html)。
 
+## [1.2.0] - 2026-05-10
+
+### 新增
+- 添加语义颜色配置（Semantic Token Colors），增强代码可读性
+- 更新主题描述信息
+
 ## [1.1.3] - 2026-05-05
 
 ### 优化
