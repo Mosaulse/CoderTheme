@@ -3,6 +3,7 @@
 **/.vscode/**
 **/.idea/**
 **/.workbuddy/**
+**/.kilo/**
 **/*.md
 palette-analysis.html
 !README.md
