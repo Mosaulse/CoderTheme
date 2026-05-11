@@ -1,10 +1,10 @@
 # 🎨 Coder Theme
 
+[![VSCode](https://img.shields.io/badge/VSCode-Coder%20Theme%20Mosaulse-blue?style=flat&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme-mosaulse) ![VSCode Version](https://vsmarketplacebadges.dev/version-short/Mosaulse.coder-theme-mosaulse.svg) ![VSCode Downloads](https://vsmarketplacebadges.dev/installs-short/Mosaulse.coder-theme-mosaulse.svg)
+[![OpenVSX](https://img.shields.io/badge/OpenVSX-Coder%20Theme%20Mosaulse-blue?style=flat&logo=visual-studio-code&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme-mosaulse) [![Open VSX Version](https://img.shields.io/open-vsx/v/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme) [![Open VSX Downloads](https://img.shields.io/open-vsx/dt/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme)
+![GitHub License](https://img.shields.io/github/license/Mosaulse/CoderTheme)
+
 基于`Visual Studio Code`的最新主题`VS Code`修改而来，为开发者提供舒适的编码体验。
-
-
-[![VSCode](https://img.shields.io/badge/VSCode-Coder%20Theme%20Mosaulse-blue?style=flat&logo=visual-studio-code&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme-mosaulse)  [![Open VSX Version](https://img.shields.io/open-vsx/v/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme)  [![Open VSX Downloads](https://img.shields.io/open-vsx/dt/Mosaulse/coder-theme?style=flat&color=%23ff7aad)](https://marketplace.visualstudio.com/items?itemName=Mosaulse.coder-theme)  ![GitHub License](https://img.shields.io/github/license/Mosaulse/CoderTheme?style=flat&color=%23ff7aad)
-
 
 ## 📸 预览
 
